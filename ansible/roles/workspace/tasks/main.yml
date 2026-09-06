@@ -4,11 +4,12 @@
     state: directory
     mode: '0755'
 
-- name: Git clone or pull dex repositories via HTTPS
+- name: Git clone or pull dex repositories
   ansible.builtin.git:
-    repo: "https://{{ github_token }}@github.com/{{ github_org }}/{{ item }}.git"
+    repo: "{{ github_org }}/{{ item }}.git"
     dest: "{{ workspace_dir }}/{{ item }}"
-    version: main
+    version: HEAD
     update: yes
+    accept_hostkey: yes
   loop: "{{ dex_repositories }}"
   
