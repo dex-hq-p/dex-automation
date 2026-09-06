@@ -1,0 +1,7 @@
+workspace_dir: "{{ playbook_dir }}/../.."
+github_org: "git@github.com:dex-hq-p/dex-automation.git"
+
+dex_repositories:
+  - dex-helm
+  - dex-gitops
+  - dex-terraform
