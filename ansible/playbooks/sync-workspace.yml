@@ -1,8 +1,8 @@
 - name: Sync All DEX Repositories to Local Workspace
   hosts: local
-  connection: local
-  become: false # Chạy với user thường ở local, không dùng sudo
   gather_facts: false
+  vars_files:
+    - ../group_vars/local.yml
 
   roles:
     - workspace

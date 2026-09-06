@@ -1,0 +1,9 @@
+workspace_dir: "{{ playbook_dir }}/../../.."
+# Token cá nhân của bạn (Thay ghp_xxx bằng token thật vừa tạo)
+github_token: "ghp_xxxxxxxxxxxxxxxxxxxx"
+github_org: "dex-hq-p" # Tên Organization hoặc Username trên GitHub
+
+dex_repositories:
+  - dex-helm
+  - dex-gitops
+  - dex-terraform

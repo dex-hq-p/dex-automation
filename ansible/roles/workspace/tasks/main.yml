@@ -1,0 +1,14 @@
+- name: Ensure workspace directory exists
+  ansible.builtin.file:
+    path: "{{ workspace_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Git clone or pull dex repositories via HTTPS
+  ansible.builtin.git:
+    repo: "https://{{ github_token }}@github.com/{{ github_org }}/{{ item }}.git"
+    dest: "{{ workspace_dir }}/{{ item }}"
+    version: main
+    update: yes
+  loop: "{{ dex_repositories }}"
+  
