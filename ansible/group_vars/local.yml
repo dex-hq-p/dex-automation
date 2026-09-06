@@ -4,3 +4,4 @@ github_org: "git@github.com:dex-hq-p"
 dex_repositories:
   - dex-gitops
   - dex-terraform
+  - dex-helm
