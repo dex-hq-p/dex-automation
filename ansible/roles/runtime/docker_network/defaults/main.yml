@@ -1,0 +1,3 @@
+---
+# Keycloak container config
+docker_network_name: "dex-network"

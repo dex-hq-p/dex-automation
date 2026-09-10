@@ -8,5 +8,5 @@ postgresql_container_state: "started"   # started | stopped
 
 # Database credentials
 postgresql_db: "keycloak"
-postgresql_user: "user"
-postgresql_password: "Aa123456@"
+postgresql_user: "keycloak"
+postgresql_password: "keycloak_password"
