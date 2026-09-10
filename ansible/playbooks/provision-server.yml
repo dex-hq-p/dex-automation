@@ -1,0 +1,13 @@
+---
+- name: Start runtime services (PostgreSQL + Keycloak)
+  hosts: local
+  gather_facts: false
+
+  vars:
+    postgresql_container_state: "started"
+    keycloak_container_state: "started"
+
+  roles:
+    - role: runtime/docker_network
+    - role: runtime/postgresql
+    - role: runtime/keycloak

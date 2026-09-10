@@ -1,0 +1,13 @@
+---
+- name: Stop runtime services (Keycloak → PostgreSQL)
+  hosts: local
+  gather_facts: false
+
+  vars:
+    postgresql_container_state: "stopped"
+    keycloak_container_state: "stopped"
+
+  # Stop in reverse order: Keycloak first, then PostgreSQL
+  roles:
+    - role: runtime/keycloak
+    - role: runtime/postgresql

@@ -1,0 +1,10 @@
+---
+# Keycloak container config
+keycloak_version: "24.0.5"
+keycloak_container_name: "keycloak"
+keycloak_port: "8080"
+keycloak_container_state: "started"   # started | stopped
+
+# Keycloak admin credentials
+keycloak_admin_user: "admin"
+keycloak_admin_password: "admin"

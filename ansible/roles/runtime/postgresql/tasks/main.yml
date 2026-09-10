@@ -1,0 +1,54 @@
+---
+- name: Create PostgreSQL data directory
+  ansible.builtin.file:
+    path: "{{ postgresql_data_dir }}"
+    state: directory
+    mode: "0755"
+  when: postgresql_container_state == 'started'
+
+- name: Pull PostgreSQL Docker image
+  community.docker.docker_image:
+    name: "postgres"
+    tag: "{{ postgresql_version }}"
+    source: pull
+  when: postgresql_container_state == 'started'
+
+- name: Run PostgreSQL container
+  community.docker.docker_container:
+    name: "{{ postgresql_container_name }}"
+    image: "postgres:{{ postgresql_version }}"
+    state: started
+    restart_policy: unless-stopped
+    ports:
+      - "{{ postgresql_port }}:5432"
+    env:
+      POSTGRES_DB: "{{ postgresql_db }}"
+      POSTGRES_USER: "{{ postgresql_user }}"
+      POSTGRES_PASSWORD: "{{ postgresql_password }}"
+    volumes:
+      - "{{ postgresql_data_dir }}:/var/lib/postgresql/data"
+    networks:
+      - name: "{{ docker_network_name }}"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U {{ postgresql_user }} -d {{ postgresql_db }}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  when: postgresql_container_state == 'started'
+
+- name: Wait for PostgreSQL to be ready
+  community.docker.docker_container_info:
+    name: "{{ postgresql_container_name }}"
+  register: pg_info
+  until: >
+    pg_info.container is defined and
+    pg_info.container.State.Health.Status == 'healthy'
+  retries: 12
+  delay: 10
+  when: postgresql_container_state == 'started'
+
+- name: Stop PostgreSQL container
+  community.docker.docker_container:
+    name: "{{ postgresql_container_name }}"
+    state: stopped
+  when: postgresql_container_state == 'stopped'

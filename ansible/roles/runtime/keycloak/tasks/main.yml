@@ -1,0 +1,52 @@
+---
+- name: Pull Keycloak Docker image
+  community.docker.docker_image:
+    name: "quay.io/keycloak/keycloak"
+    tag: "{{ keycloak_version }}"
+    source: pull
+  when: keycloak_container_state == 'started'
+
+- name: Run Keycloak container
+  community.docker.docker_container:
+    name: "{{ keycloak_container_name }}"
+    image: "quay.io/keycloak/keycloak:{{ keycloak_version }}"
+    state: started
+    restart_policy: unless-stopped
+    command: "start-dev"
+    ports:
+      - "{{ keycloak_port }}:8080"
+    env:
+      KC_DB: "postgres"
+      KC_DB_URL: "jdbc:postgresql://{{ postgresql_container_name }}:5432/{{ postgresql_db }}"
+      KC_DB_USERNAME: "{{ postgresql_user }}"
+      KC_DB_PASSWORD: "{{ postgresql_password }}"
+      KEYCLOAK_ADMIN: "{{ keycloak_admin_user }}"
+      KEYCLOAK_ADMIN_PASSWORD: "{{ keycloak_admin_password }}"
+      KC_HOSTNAME_STRICT: "false"
+      KC_HTTP_ENABLED: "true"
+    networks:
+      - name: "{{ docker_network_name }}"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/health/ready || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+  when: keycloak_container_state == 'started'
+
+- name: Wait for Keycloak to be healthy
+  community.docker.docker_container_info:
+    name: "{{ keycloak_container_name }}"
+  register: kc_info
+  until: >
+    kc_info.container is defined and
+    kc_info.container.State.Health.Status == 'healthy'
+  retries: 20
+  delay: 15
+  when: keycloak_container_state == 'started'
+
+- name: Stop Keycloak container
+  community.docker.docker_container:
+    name: "{{ keycloak_container_name }}"
+    state: stopped
+  when: keycloak_container_state == 'stopped'

@@ -1,0 +1,12 @@
+---
+# PostgreSQL container config
+postgresql_version: "16"
+postgresql_container_name: "postgresql"
+postgresql_port: "5432"
+postgresql_data_dir: "/tmp/dex/postgresql/data"
+postgresql_container_state: "started"   # started | stopped
+
+# Database credentials
+postgresql_db: "keycloak"
+postgresql_user: "user"
+postgresql_password: "Aa123456@"

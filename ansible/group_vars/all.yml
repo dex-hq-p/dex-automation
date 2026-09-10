@@ -1,0 +1,3 @@
+---
+# Shared Docker network name (used by all services)
+docker_network_name: "dex-network"
